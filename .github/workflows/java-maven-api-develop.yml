@@ -59,6 +59,7 @@ jobs:
         java-version: 1.11
     - name: API Contract Testing
       run: |
+        sudo apt-get install libxml2-utils
         #VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:execxml)
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         java -jar target/calculator-api-$VERSION.jar &
