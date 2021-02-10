@@ -47,23 +47,11 @@ jobs:
         sudo apt-get install libxml2-utils
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         docker build -t govindarajanv/calculator-api:$VERSION .
+        docker build -t govindarajanv/calculator-api:latest .
         docker images
     - name: Test Image
-      run: |
-        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-        echo $VERSION
-        echo "listing images"
-        docker images
-        echo "run container"
-        docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
-        echo "sleep continues"
-        sleep 3
-        echo "show running containers"
-        docker ps         
-        echo "show stopped containers"
-        docker ps -a
-        echo "show logs"
-        docker logs calculator-api
-        result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
-        echo $result
-        if [[ "$result" != 6 ]]; then echo "Container image creation skipped as API validation failed"; fi 
+      uses: addnab/docker-run-action@v1
+      with:
+          image: govindarajanv/calculator-api:latest
+          options: -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api
+          run: curl -s http://localhost:8080/addition/1/2/3
