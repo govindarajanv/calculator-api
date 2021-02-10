@@ -51,6 +51,7 @@ jobs:
     - name: Test Image
       run: |
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        echo $VERSION
         docker images
         docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
         sleep 3
