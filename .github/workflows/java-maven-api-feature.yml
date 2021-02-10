@@ -30,3 +30,30 @@ jobs:
         java-version: 1.11
     - name: Maven Verify
       run: mvn -B clean verify
+  publish:
+    name: Publish    
+    runs-on: ubuntu-latest
+  
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Build Container Image
+      run: |
+        sudo apt-get install libxml2-utils
+        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        docker build -t govindarajanv/calculator-api:$VERSION .
+        docker images
+    - name: Test Image
+      run: |
+        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        docker images
+        docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
+        sleep 3
+        docker ps -a
+        docker logs calculator-api
+        result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
+        echo $result
+        if [[ "$result" != 6 ]]; then echo "Container image creation skipped as API validation failed"; fi 
