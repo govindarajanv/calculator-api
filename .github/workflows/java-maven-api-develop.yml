@@ -20,7 +20,7 @@ jobs:
       with:
         java-version: 1.11
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B compile --file pom.xml
   unit-test:
     name: Unit Test
     needs: [build]
