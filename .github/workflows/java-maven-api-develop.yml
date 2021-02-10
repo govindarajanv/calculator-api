@@ -91,7 +91,7 @@ jobs:
         sleep 3
         result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
         if [ $result -eq 6 ]; then
-	          docker tag govindarajanv/calculator-api:$VERSION govindarajanv/calculator-api:latest 
+	    docker tag govindarajanv/calculator-api:$VERSION govindarajanv/calculator-api:latest 
             docker push govindarajanv/calculator-api:$VERSION 
             docker push govindarajanv/calculator-api:latest
         else
