@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk11
 
-COPY ./target/calculator-api-0.0.1-SNAPSHOT.jar /usr/app/
+COPY ./target/calculator-api-*.jar /usr/app/
 
 WORKDIR /usr/app
 
