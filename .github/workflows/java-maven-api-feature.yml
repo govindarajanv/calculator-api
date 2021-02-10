@@ -50,8 +50,7 @@ jobs:
         docker build -t govindarajanv/calculator-api:latest .
         docker images
     - name: Test Image
-      uses: addnab/docker-run-action@v1
-      with:
-          image: govindarajanv/calculator-api:latest
-          options: -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api
-          run: curl -s http://localhost:8080/addition/1/2/3
+    - name: Build docker images
+      run: docker-compose build
+    - name: Run tests
+      run: docker-compose run test
