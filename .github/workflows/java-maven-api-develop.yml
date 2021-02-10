@@ -85,23 +85,20 @@ jobs:
         docker build -t govindarajanv/calculator-api:$VERSION .
     - name: Test Image
       run: |
-        sudo apt-get install libxml2-utils
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
         sleep 3
-        docker ps
+        docker logs calculator-api
         result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
         if [[ "$result" != 6 ]]; then echo "Container image creation skipped as API validation failed"; exit 1; fi 
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Tag the image
       run: |
-        sudo apt-get install libxml2-utils
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         docker tag govindarajanv/calculator-api:$VERSION govindarajanv/calculator-api:latest
     - name: Publish the image
       run: |
-        sudo apt-get install libxml2-utils
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         docker push govindarajanv/calculator-api:$VERSION 
         docker push govindarajanv/calculator-api:latest
