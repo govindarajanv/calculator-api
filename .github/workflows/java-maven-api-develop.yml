@@ -90,7 +90,7 @@ jobs:
         docker images
         docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
         sleep 3
-        docker ps
+        docker ps -a
         docker logs calculator-api
         result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
         if [[ "$result" != 6 ]]; then echo "Container image creation skipped as API validation failed"; exit 1; fi 
