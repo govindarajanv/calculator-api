@@ -52,10 +52,15 @@ jobs:
       run: |
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
         echo $VERSION
+        echo "listing images"
         docker images
+        echo "run container"
         docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
+        echo "sleep continues"
         sleep 3
+        echo "show stopped containers"
         docker ps -a
+        echo "show logs"
         docker logs calculator-api
         result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
         echo $result
