@@ -77,7 +77,28 @@ jobs:
       run: |
         mkdir -p ~/.m2
         echo "<settings><servers><server><id>github</id><username>govindarajanv</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
-        mvn deploy
+        mvn clean deploy
+    - name: Build Container Image
+      run: |
+        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        docker build -t govindarajanv/calculator-api:$VERSION .
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    - name: Verify and Publish Image
+      run: |
+        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
+        sleep 3
+        result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
+        if [ $result -eq 6 ]; then
+	          docker tag govindarajanv/calculator-api:$VERSION govindarajanv/calculator-api:latest 
+            docker push govindarajanv/calculator-api:$VERSION 
+            docker push govindarajanv/calculator-api:latest
+        else
+	          echo "Container image creation skipped as API validation failed"
+	          docker stop calculator-api
+        fi  
+fi
   integration-test:
     name: API Integration Testing
     runs-on: ubuntu-latest
