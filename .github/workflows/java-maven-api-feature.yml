@@ -50,7 +50,6 @@ jobs:
         docker build -t govindarajanv/calculator-api:latest .
         docker images
     - name: Test Image
-    - name: Build docker images
       run: docker-compose build
     - name: Run tests
       run: docker-compose run test
