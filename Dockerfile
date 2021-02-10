@@ -1,8 +1,8 @@
 FROM adoptopenjdk/openjdk11
 
-COPY ./target/calculator-api-*.jar /usr/app/
-
 WORKDIR /usr/app
+
+COPY target/*.jar /usr/app/
 
 #RUN sh -c 'touch calculator-api-0.0.1-SNAPSHOT.jar'
 
