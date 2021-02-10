@@ -23,6 +23,7 @@ jobs:
       run: mvn -B package --file pom.xml
   test:
     name: Test
+    needs: [build]
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1
@@ -49,8 +50,9 @@ jobs:
         fi
         kill -9 $PID > /dev/null
   publish:
-    name: Publish
+    name: Publish    
     runs-on: ubuntu-latest
+    needs: [test]
 
     steps:
     - uses: actions/checkout@v1
@@ -68,6 +70,7 @@ jobs:
   integration-test:
     name: API Integration Testing
     runs-on: ubuntu-latest
+    needs: [publish]
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 1.11
