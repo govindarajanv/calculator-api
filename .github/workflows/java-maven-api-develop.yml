@@ -21,7 +21,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
   test:
-    name: Unit Test
+    name: Test
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1
@@ -29,8 +29,24 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.11
-    - name: Maven Verify
+    - name: Unit Test
       run: mvn -B clean verify
+    - name: API Contract Testing
+      run: |
+        sudo apt-get install libxml2-utils
+        #VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:execxml)
+        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+        java -jar target/calculator-api-$VERSION.jar &
+        PID=$!
+        sleep 20
+        result=$(curl -s http://localhost:8080/addition/1/2/3 | jq .result)
+        if [ $result -eq 6 ]; then
+          echo "API Contract Testing is successful"
+        else
+          echo "API Contract Testing failed"
+          exit 1
+        fi
+        kill -9 $PID > /dev/null
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -49,7 +65,7 @@ jobs:
         echo "<settings><servers><server><id>github</id><username>govindarajanv</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
         mvn deploy
   integration-test:
-    name: Contract Testing
+    name: API Integration Testing
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -59,17 +75,4 @@ jobs:
         java-version: 1.11
     - name: API Contract Testing
       run: |
-        sudo apt-get install libxml2-utils
-        #VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:execxml)
-        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-        java -jar target/calculator-api-$VERSION.jar &
-        PID=$!
-        sleep 20
-        result=$(curl -s http://localhost:8080/addition/1/2/3 | jq .result)
-        if [ $result -eq 6 ]; then
-          echo "API Contract Testing is successful"
-        else
-          echo "API Contract Testing failed"
-          exit 1
-        fi
-        kill -9 $PID > /dev/null
+        echo "Integration Testing is Stubbed"
