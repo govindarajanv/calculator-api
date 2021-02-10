@@ -49,7 +49,9 @@ jobs:
         docker build -t govindarajanv/calculator-api:$VERSION .
         docker build -t govindarajanv/calculator-api:latest .
         docker images
-    - name: Test Image
-      run: docker-compose build
+    - name: Launch Service
+      run: docker-compose build && docker-compose up -d
     - name: Run tests
-      run: docker-compose run test
+      run: curl -s http://localhost:8080/addition/1/2/3
+    - name: Shut down the service
+      run: docker-compose down
