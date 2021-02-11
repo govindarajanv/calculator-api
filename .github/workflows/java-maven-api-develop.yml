@@ -85,16 +85,9 @@ jobs:
         docker build -t govindarajanv/calculator-api:$VERSION .
         docker images
     - name: Test Image
-      run: |
-        VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-        docker images
-        docker run -d --name calculator-api --rm -p 9090:8080 govindarajanv/calculator-api:$VERSION
-        sleep 3
-        docker ps -a
-        docker logs calculator-api
-        result=$(curl -s http://localhost:9090/addition/1/2/3 | jq -r '.result')
-        echo $result
-        if [[ "$result" != 6 ]]; then echo "Container image creation skipped as API validation failed"; fi 
+      run: docker-compose up -d
+    - name: Test
+      run: docker run --network container:calculator-api appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Tag the image
