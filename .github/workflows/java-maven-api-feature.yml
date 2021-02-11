@@ -60,7 +60,7 @@ jobs:
         sleep 5
         docker inspect --format='{{json .State.Health}}' calculator
         echo "-----------------------------"
-        sleep 5
+        sleep 30
         docker inspect --format='{{json .State.Health}}' calculator
         result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
         if [ $result != "healthy" ]; then exit 1; fi        
