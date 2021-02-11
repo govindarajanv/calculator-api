@@ -85,9 +85,15 @@ jobs:
         docker build -t govindarajanv/calculator-api:$VERSION .
         docker images
     - name: Test Image
-      run: docker-compose up -d
-    - name: Test
-      run: docker run --network container:calculator-api appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
+      run: |
+        docker-compose up -d
+        docker ps
+        sleep 60
+        docker ps
+        result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
+        if [ $result != "\"healthy\"" ]; then exit 1; fi        
+    - name: Shut down the service
+      run: docker-compose down
     - name: Login to DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Tag the image
