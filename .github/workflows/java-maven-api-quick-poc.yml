@@ -30,9 +30,9 @@ jobs:
         run: |
           mvn clean install
           sudo apt-get install libxml2-utils
-          docker build -t govindarajanv/calculator-api:$VERSION .
-          docker images
           VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-          docker tag govindarajanv/calculator-api:$VERSION govindarajanv/calculator-api:latest
+          docker build -t govindarajanv/calculator-api:$VERSION .
+          docker build -t govindarajanv/calculator-api:latest .
+          docker images
           docker push govindarajanv/calculator-api:$VERSION 
           docker push govindarajanv/calculator-api:latest
