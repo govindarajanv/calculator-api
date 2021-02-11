@@ -2,6 +2,7 @@ version: "3.0"
 
 services:
   calculator-api:
+    container_name: calculator
     build: 
       context: ./
       dockerfile: Dockerfile

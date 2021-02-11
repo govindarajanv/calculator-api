@@ -52,6 +52,6 @@ jobs:
     - name: Test Image
       run: docker-compose up -d
     - name: Test
-      run: docker run --network container:calculator-api appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
+      run: docker run --network container:calculator appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
     - name: Shut down the service
       run: docker-compose down
