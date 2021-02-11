@@ -57,7 +57,7 @@ jobs:
         echo "+++++++++++++++++++++++++++++"
         docker ps
         echo "+++++++++++++++++++++++++++++"
-        docker exec -i calculator 'curl -s http://localhost:8080/addition/1/2/3'
+        docker exec -i calculator curl -s http://localhost:8080/addition/1/2/3
         #docker run hello-world
         echo "+++++++++++++++++++++++++++++"
         docker ps
