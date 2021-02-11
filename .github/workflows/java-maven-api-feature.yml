@@ -58,7 +58,7 @@ jobs:
         docker ps
         echo "+++++++++++++++++++++++++++++"
         sleep 2
-        docker inspect --format='{{json .State.Health}}' calculator| jq ."Status"
+        docker inspect --format='{{json .State.Health}}' calculator
         echo "-----------------------------"
         result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
         if [ $result != "healthy" ]; then exit 1; fi        
