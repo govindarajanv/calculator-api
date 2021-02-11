@@ -8,6 +8,7 @@ on:
       - 'master'
       - 'release*'
       - 'develop*'
+      - 'quick-poc*'
   pull_request:
     branches: [ develop ]
 jobs:
