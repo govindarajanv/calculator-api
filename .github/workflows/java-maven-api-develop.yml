@@ -95,7 +95,7 @@ jobs:
     - name: Shut down the service
       run: docker-compose down
     - name: Login to DockerHub Registry
-      run: echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+      run: docker login -u ${DOCKERHUB_USERNAME} -p DOCKERHUB_PASSWORD
       env:
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
