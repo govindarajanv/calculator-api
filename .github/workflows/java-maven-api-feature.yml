@@ -57,7 +57,7 @@ jobs:
         echo "+++++++++++++++++++++++++++++"
         docker ps
         echo "+++++++++++++++++++++++++++++"
-        docker run --network container:calculator appropriate/curl -s http://localhost:8080/addition/1/2/3
+        curl -s http://localhost:8080/addition/1/2/3
         #docker run hello-world
         echo "+++++++++++++++++++++++++++++"
         docker ps
