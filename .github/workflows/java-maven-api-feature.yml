@@ -52,21 +52,8 @@ jobs:
     - name: Test Image
       run: |
         docker-compose up -d
-        echo "+++++++++++++++++++++++++++++"
-        docker ps -a
-        echo "+++++++++++++++++++++++++++++"
-        docker ps
-        echo "+++++++++++++++++++++++++++++"
-        sleep 5
-        docker inspect --format='{{json .State.Health}}' calculator
-        echo "-----------------------------"
-        sleep 30
-        docker inspect --format='{{json .State.Health}}' calculator| jq ."Status"
         result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
+        echo $result
         if [ $result != "healthy" ]; then exit 1; fi        
-        #docker run hello-world
-        echo "+++++++++++++++++++++++++++++"
-        docker ps
-        echo "+++++++++++++++++++++++++++++"
     - name: Shut down the service
       run: docker-compose down
