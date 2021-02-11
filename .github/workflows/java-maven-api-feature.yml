@@ -56,7 +56,6 @@ jobs:
         sleep 60
         docker ps
         result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
-        echo $result
         if [ $result != "\"healthy\"" ]; then exit 1; fi        
     - name: Shut down the service
       run: docker-compose down
