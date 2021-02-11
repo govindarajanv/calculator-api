@@ -52,6 +52,7 @@ jobs:
     - name: Test Image
       run: |
         docker-compose up -d
+        sleep 30
         result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
         echo $result
         if [ $result != "healthy" ]; then exit 1; fi        
