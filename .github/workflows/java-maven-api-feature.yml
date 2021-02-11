@@ -57,7 +57,8 @@ jobs:
         echo "+++++++++++++++++++++++++++++"
         docker ps
         echo "+++++++++++++++++++++++++++++"
-        docker exec -i calculator curl -s http://localhost:8080/addition/1/2/3
+        result=$(docker inspect --format='{{json .State.Health}}' calculator| jq ."Status")
+        if [ $result != "healthy" ]; then exit 1; fi        
         #docker run hello-world
         echo "+++++++++++++++++++++++++++++"
         docker ps
