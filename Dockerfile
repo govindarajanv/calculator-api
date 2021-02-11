@@ -4,7 +4,12 @@ WORKDIR /usr/app
 
 COPY target/*.jar /usr/app/
 
-RUN sh -c 'ls -rlt calculator-api-*.jar'
+ARG value
 
-ENTRYPOINT ["java","-jar","calculator-api-1.0.1-SNAPSHOT.jar"]
+ENV envValue=$value
+
+RUN ls -lrt calculator-api-${envValue}.jar
+
+#ENTRYPOINT ["java","-jar","calculator-api-${envValue}.jar"]
+CMD java -jar calculator-api-${envValue}.jar
 HEALTHCHECK CMD curl -s --fail http://localhost:8080/addition/1/2/3 || exit 1
