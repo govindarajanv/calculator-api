@@ -4,7 +4,6 @@
 name: Java CI with Maven
 on:
   push:
-    branches: [ quick-poc* ]
     branches-ignore:
       - 'master'
       - 'release*'
