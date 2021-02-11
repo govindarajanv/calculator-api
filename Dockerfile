@@ -8,7 +8,7 @@ ARG value
 
 ENV envValue=$value
 
-RUN ls -lrt calculator-api-${envValue}.jar
+#RUN ls -lrt calculator-api-${envValue}.jar
 
 #ENTRYPOINT ["java","-jar","calculator-api-${envValue}.jar"]
 CMD java -jar calculator-api-${envValue}.jar
