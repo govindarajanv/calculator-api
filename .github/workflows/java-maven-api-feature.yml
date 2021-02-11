@@ -50,6 +50,8 @@ jobs:
         docker build -t govindarajanv/calculator-api:latest .
         docker images
     - name: Test Image
-      run: docker-compose up -d && docker run --network container:calculator appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
+      run: |
+        docker-compose up -d
+        docker run --network container:calculator appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/addition/1/2/3
     - name: Shut down the service
       run: docker-compose down
