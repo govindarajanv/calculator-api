@@ -61,8 +61,9 @@ jobs:
         fi
         kill -9 $PID > /dev/null
   sonar:
-    name: Test - SonarCloud Scan
-    runs-on: ubuntu-18.04
+    name: Static Code Analysis
+    needs: [build]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
