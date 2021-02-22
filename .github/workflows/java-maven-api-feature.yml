@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
     # Run the secrets finder
     - name: secrets finder
-      uses: govindarajanv/secrets-finder@v2.5
+      uses: govindarajanv/secrets-finder@v2.6
   build:
     runs-on: ubuntu-latest
     steps:
