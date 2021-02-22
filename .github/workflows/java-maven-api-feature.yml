@@ -11,6 +11,15 @@ on:
   pull_request:
     branches: [ develop ]
 jobs:
+  secret_scan:
+    runs-on: ubuntu-latest
+    name: Find secrets
+      steps:
+      # Checkout the source code so we have some files to look at.
+      - uses: actions/checkout@v2
+      # Run the secrets finder
+      - name: secrets finder
+        uses: govindarajanv/secrets-finder@v2.5
   build:
     runs-on: ubuntu-latest
     steps:
