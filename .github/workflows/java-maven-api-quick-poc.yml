@@ -47,7 +47,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - run: |
+         heroku login 
+         heroku container:login
          heroku container:rm web -a calculator-java-maven-service
+         docker login --username=$(heroku auth:whoami) password=$(heroku auth:token) registry.heroku.com
          VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
          docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
          docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
