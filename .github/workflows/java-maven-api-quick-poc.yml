@@ -48,14 +48,15 @@ jobs:
     steps:
      - name: SonarCloud Scan
        run: |
-          heroku login 
-          heroku container:login
-          heroku container:rm web -a calculator-java-maven-service
-          docker login --username=$(heroku auth:whoami) password=$(heroku auth:token) registry.heroku.com
+          #heroku login 
+
+          docker login --username=$(heroku whoami) --password=$(heroku auth:token) registry.heroku.com
           VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
           docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
           docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
           docker push registry.heroku.com/calculator-java-maven-service/web:latest
+          heroku container:login
+          heroku container:rm web -a calculator-java-maven-service
           heroku container:release web -a calculator-java-maven-service
        env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
