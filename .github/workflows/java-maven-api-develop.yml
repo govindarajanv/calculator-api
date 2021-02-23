@@ -160,15 +160,13 @@ jobs:
          name: my-artifact
          path: target/
      - name: Build, Push and Deploy to Heroku #set the whatever name you want to this step
-       id: heroku
-       uses: jctaveras/heroku-deploy@v1.0.0  # use the latest version of the action
-       with:
-         email: ${{ secrets.HEROKU_EMAIL }} # your heroku email
-         api_key: ${{ secrets.HEROKU_API_KEY }} # your  heroku api key
-         app_name: ${{ secrets.HEROKU_APP_NAME }} # you aplication name
-         dockerfile_path: '/home/runner/work/calculator-api/calculator-api' # set the path to the folder wher the Dokerfile is located
-         options: '--build-arg value=1.0.1-SNAPSHOT' # Docker Build Options
-         formation: '' # Docker Dyno Formation. By default is web
+       run: |
+         heroku container:rm web -a calculator-java-maven-service
+         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+         docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
+         docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
+         docker push registry.heroku.com/calculator-java-maven-service/web:latest
+         heroku container:release web -a calculator-java-maven-service
      - name: Post Deployment Check
        run: |
         result=$(curl -s https://calculator-java-maven-service.herokuapp.com/addition/1/2/3 | jq .result)
