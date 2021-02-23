@@ -142,7 +142,7 @@ jobs:
         echo "Integration Testing is Stubbed"
   deploy:
     name: Deploy/Release to production
-    needs: [build]
+    needs: [integration-test]
     runs-on: ubuntu-latest
     steps:
      - name: Download a single artifact
