@@ -135,25 +135,37 @@ jobs:
       run: |
         echo "Integration Testing is Stubbed"
   deploy:
-    name: Depploy/Release to production
+    name: Deploy/Release to production
     runs-on: ubuntu-latest
     needs: [integration-test]
     steps:
     - name: Deploy to Heroku
       run: |
+        echo "++++++++++++++++++++"
         sudo apt-get install libxml2-utils
+        echo "++++++++++++++++++++"
         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)      
+        echo "++++++++++++++++++++"
         mvn clean install
+        echo "++++++++++++++++++++"
         docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . 
+        echo "++++++++++++++++++++"
         docker push registry.heroku.com/calculator-java-maven-service/web:$VERSION
+        echo "++++++++++++++++++++"
         docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION .
+        echo "++++++++++++++++++++"
         docker push registry.heroku.com/calculator-java-maven-service/web:latest
+        echo "++++++++++++++++++++"
         heroku container:rm web -a calculator-java-maven-service
+        echo "++++++++++++++++++++"
         heroku container:release web -a calculator-java-maven-service
+        echo "++++++++++++++++++++"
         result=$(curl -s https://calculator-java-maven-service.herokuapp.com/addition/1/2/3 | jq .result)
+        echo "++++++++++++++++++++"
         if [ $result -eq 6 ]; then
           echo "Application is successfully deployed in production"
         else
+          echo "++++++++++++++++++++"
           echo "Prod deployment failed"
           exit 1
         fi    
