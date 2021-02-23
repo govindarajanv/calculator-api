@@ -149,11 +149,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - uses: actions/checkout@v1
-     - name: get the path
-       run: |
-         echo $pwd
-         ls -rlt
-         pwd
      - name: Download a single artifact
        uses: actions/download-artifact@v2
        with:
@@ -161,20 +156,25 @@ jobs:
          path: target/
      - name: Build, Push and Deploy to Heroku #set the whatever name you want to this step
        run: |
-         heroku container:rm web -a calculator-java-maven-service
-         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-         docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
-         docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
-         docker push registry.heroku.com/calculator-java-maven-service/web:latest
-         heroku container:release web -a calculator-java-maven-service
+          sudo apt-get install libxml2-utils
+          docker login --username=$(heroku whoami) --password=$(heroku auth:token) registry.heroku.com
+          VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+          docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
+          docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
+          docker push registry.heroku.com/calculator-java-maven-service/web:latest
+          heroku container:login
+          heroku container:rm web -a calculator-java-maven-service
+          heroku container:release web -a calculator-java-maven-service
+       env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
      - name: Post Deployment Check
        run: |
         result=$(curl -s https://calculator-java-maven-service.herokuapp.com/addition/1/2/3 | jq .result)
-        echo "++++++++++++++++++++"
         if [ $result -eq 6 ]; then
           echo "Application is successfully deployed in production"
         else
-          echo "++++++++++++++++++++"
           echo "Prod deployment failed"
           exit 1
         fi    
