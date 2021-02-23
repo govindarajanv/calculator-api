@@ -56,3 +56,7 @@ jobs:
          docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
          docker push registry.heroku.com/calculator-java-maven-service/web:latest
          heroku container:release web -a calculator-java-maven-service
+       env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
