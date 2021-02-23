@@ -163,8 +163,12 @@ jobs:
           docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
           docker push registry.heroku.com/calculator-java-maven-service/web:latest
           heroku container:login
+          app_version=$(heroku apps:info calculator-java-maven-service -j | jq ."dynos[0].release.version")
+          echo "Current App version is $app_version"
           heroku container:rm web -a calculator-java-maven-service
           heroku container:release web -a calculator-java-maven-service
+          app_version=$(heroku apps:info calculator-java-maven-service -j | jq ."dynos[0].release.version")
+          echo "Released App version is $app_version"
        env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
