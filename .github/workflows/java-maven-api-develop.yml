@@ -175,6 +175,7 @@ jobs:
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
      - name: Post Deployment Check
        run: |
+        sleep 60
         result=$(curl -s https://calculator-java-maven-service.herokuapp.com/addition/1/2/3 | jq .result)
         if [ $result -eq 6 ]; then
           echo "Application is successfully deployed in production"
