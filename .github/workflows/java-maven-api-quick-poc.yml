@@ -42,3 +42,14 @@ jobs:
           name: my-artifact
           path: target/*
           retention-days: 5
+  deploy:
+    name: Deploy/Release to production
+    runs-on: ubuntu-latest
+    steps:
+     - run: |
+         heroku container:rm web -a calculator-java-maven-service
+         VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+         docker build -t registry.heroku.com/calculator-java-maven-service/web:$VERSION --build-arg value=$VERSION . -f Dockerfile
+         docker build -t registry.heroku.com/calculator-java-maven-service/web:latest --build-arg value=$VERSION . -f Dockerfile
+         docker push registry.heroku.com/calculator-java-maven-service/web:latest
+         heroku container:release web -a calculator-java-maven-service
