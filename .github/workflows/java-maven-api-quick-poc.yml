@@ -48,10 +48,14 @@ jobs:
     steps:
      - name: Check Out Repo 
        uses: actions/checkout@v2
+     - name: Download a single artifact
+       uses: actions/download-artifact@v2
+       with:
+         name: my-artifact
+         path: target/
      - name: Heroku Push
        run: |
           #heroku login 
-          mvn clean install
           sudo apt-get install libxml2-utils
           docker login --username=$(heroku whoami) --password=$(heroku auth:token) registry.heroku.com
           VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
